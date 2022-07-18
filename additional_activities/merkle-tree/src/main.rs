@@ -25,22 +25,15 @@ fn hash<T: Hash>(t: &T) -> HashValue {
 /// Given a vector of data blocks this function adds padding blocks to the end
 /// until the length is a power of two which is needed for Merkle trees.
 fn pad_base_layer(blocks: &mut Vec<&str>) {
-<<<<<<< Updated upstream
-	todo!()
-=======
 	let mut n=blocks.len(); // n>0 or error
 	let mut pow = 1;
 	while n >= 1 {
 		pow = pow << 1;
 		n = n >> 1;
 	}
-	println!("pow = {}", pow);
-	println!("blocks.len() = {}", blocks.len());
-	println!("blocks.len() = {}",(pow-blocks.len()));
 	for _ in 0..(pow-blocks.len()) {
 		blocks.push("");
 	}
->>>>>>> Stashed changes
 }
 
 /// Helper function to combine two hashes and compute the hash of the combination.
@@ -50,7 +43,6 @@ fn pad_base_layer(blocks: &mut Vec<&str>) {
 /// is to convert the hashes to strings and concatenate them.
 fn concatenate_hash_values(left: HashValue, right: HashValue) -> HashValue {
 	left.to_string().push_str(&right.to_string());
-	println!("head = {:?}",left);
 	hash(&left)
 }
 
@@ -63,9 +55,6 @@ fn concatenate_hash_values(left: HashValue, right: HashValue) -> HashValue {
 /// Notice that the punctuation like the comma and exclamation point are included in the words
 /// but the spaces are not.
 fn calculate_merkle_root(sentence: &str) -> HashValue {
-<<<<<<< Updated upstream
-	todo!()
-=======
 	let mut blocks: Vec<&str> = sentence.split(' ').collect();
 	pad_base_layer(&mut blocks);
 	let mut hash_blocks: Vec<HashValue> = blocks.iter().map(|x| hash(&x.to_owned())).collect();
@@ -75,7 +64,6 @@ fn calculate_merkle_root(sentence: &str) -> HashValue {
 			}).collect();
 	}
 	hash_blocks[0]
->>>>>>> Stashed changes
 }
 
 /// A representation of a sibling node along the Merkle path from the data
@@ -123,9 +111,6 @@ fn generate_proof(sentence: &str, index: usize) -> (HashValue, Vec<SiblingNode>)
 /// Checks whether the given word is contained in a sentence, without knowing the whole sentence.
 /// Rather we only know the merkle root of the sentence and a proof.
 fn validate_proof(root: &str, word: &str, proof: Vec<SiblingNode>) -> bool {
-<<<<<<< Updated upstream
-	todo!()
-=======
 	let mut key = hash(&word.to_owned());
 	let hash_root=root.parse::<u64>().unwrap();
 	for p in proof.iter() {
@@ -134,18 +119,11 @@ fn validate_proof(root: &str, word: &str, proof: Vec<SiblingNode>) -> bool {
 			SiblingNode::Right(h1) => key = concatenate_hash_values(key,*h1),
 		}
 	}
-	println!("key = {}",key);
-	println!("hash_root = {}",hash_root);
 	key==hash_root
->>>>>>> Stashed changes
 }
 
 #[test]
 fn we_should_probably_have_some_tests() {
-<<<<<<< Updated upstream
-	todo!()
-}
-=======
 	let sentence = "Trust me, bro!";
 	let hash_root = calculate_merkle_root(sentence);
 	let str_root = hash_root.to_string();
@@ -162,4 +140,3 @@ fn we_should_probably_have_some_tests() {
 	assert!(!invalid, "Fake proof appears valid.");
 
 }
->>>>>>> Stashed changes
