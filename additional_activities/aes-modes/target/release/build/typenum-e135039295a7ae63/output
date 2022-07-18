@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/Users/evariste/Work/cam/cambridge-2022/materials/additional_activities/aes-modes/target/release/build/typenum-e135039295a7ae63/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/Users/evariste/Work/cam/cambridge-2022/materials/additional_activities/aes-modes/target/release/build/typenum-e135039295a7ae63/out/op.rs
