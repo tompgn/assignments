@@ -131,7 +131,6 @@ fn we_should_probably_have_some_tests() {
 	let (root, proof) = generate_proof(sentence,0);
 	assert_eq!(root,hash_root);
 	println!("Root: {:?}",root);
-	// println!("Proof: {:#?}",proof);
 	let valid = validate_proof(&str_root,"Trust",proof);
 	let (root, proof) = generate_proof(sentence,0);
 	let invalid = validate_proof(&str_root,"me,",proof);
