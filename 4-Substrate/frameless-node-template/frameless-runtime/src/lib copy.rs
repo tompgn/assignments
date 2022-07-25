@@ -24,8 +24,6 @@ use sp_storage::well_known_keys;
 use sp_runtime::{BuildStorage, Storage};
 
 use sp_core::OpaqueMetadata;
-use sp_runtime::transaction_validity::TransactionValidityError;
-use sp_runtime::transaction_validity::InvalidTransaction::Call;
 
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
@@ -128,10 +126,8 @@ pub type Block = generic::Block<Header, BasicExtrinsic>;
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize, parity_util_mem::MallocSizeOf))]
 #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
 pub enum Calls {
-	Add(u8),
-	Subtract(u8),
-	Multiply(u8),
-	Divide(u8),
+	Adder(u8),
+	Multiplier(u8),
 }
 
 // this extrinsic type does nothing other than fulfill the compiler.
@@ -191,14 +187,14 @@ impl_runtime_apis! {
 
 			
 			let enc_acc = sp_io::storage::get(&ACCUMULATOR_KEY).unwrap_or_default();
-			let mut acc = if enc_acc.len()==0 {0} else {<u8>::decode(&mut &enc_acc[..]).unwrap()};			
+			info!(target: "frameless", "crap Entering apply_extrinsic: {:?}", enc_acc);
+			let mut acc = if enc_acc.len()==0 {0} else {<u8>::decode(&mut &enc_acc[..]).unwrap()};
+			info!(target: "frameless", "crapcrap Entering apply_extrinsic: {:?}", acc);
 			let call = extrinsic.0;
 
 			match call {
-				Calls::Add(a) => acc += a,
-				Calls::Multiply(m) => acc *= m,
-				Calls::Subtract(s) => acc -= s,
-				Calls::Divide(d) => acc /= d,
+				Calls::Adder(a) => acc += a,
+				Calls::Multiplier(m) => acc *= m,
 			} 
 			
 			sp_io::storage::set(&ACCUMULATOR_KEY, &acc.encode());
@@ -247,20 +243,6 @@ impl_runtime_apis! {
 
 			// we don't know how to validate this -- It should be fine??
 			let data = tx.0;
-
-			let enc_acc = sp_io::storage::get(&ACCUMULATOR_KEY).unwrap_or_default();
-			let acc = if enc_acc.len()==0 {0} else {<u8>::decode(&mut &enc_acc[..]).unwrap()};
-
-			match data {
-				Calls::Subtract(s) => if acc < s {
-					info!(target: "frameless","🤬Subtraction error");
-					return Err(TransactionValidityError::Invalid(Call));},
-				Calls::Divide(d) => if 0 == d {
-					info!(target: "frameless","🤬Division error");
-					return Err(TransactionValidityError::Invalid(Call));},
-				_ => (),
-			}
-
 			Ok(ValidTransaction { provides: vec![data.encode()], ..Default::default() })
 		}
 	}
